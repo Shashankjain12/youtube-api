@@ -14,10 +14,14 @@ Youtube API google api client - For extracting the videos from youtube
 celery and celeryBeat - Celery an Async Task based queue is implemented in order to run the tasks in background
                         so that our api won't stop executing and Celery Beat a cron scheduler to run our Application in 30 sec intervals
 
-Docker (TODO) - For containerising my application
+Docker - For containerising my application
+
+Docker-compose - for running multiple services parallely along with credentials
+
 ### API's exposed
 1. async_youtube/ - For running the asynchronous tasks based queue on demand
-2. search_related_text/{text:String} - To search relevant text based on the database a user facing service
+2. search_text/{String:text} - To search relevant text based on the database a user facing service
+3. search/<int:pg_number> - Paginated api which is based on the page number (max_results per page 5)
 
 --------------------
 Build the Application
