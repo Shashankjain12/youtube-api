@@ -1,0 +1,80 @@
+version: "3.4"
+
+services:
+  redis:
+    image: "redis:5.0.4-stretch"
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - "redis:/data"
+  db:
+    image: mongo:4.0.8
+    container_name: mongodb
+    restart: unless-stopped
+    command: mongod
+    environment:
+      # MONGO_INITDB_ROOT_USERNAME: admin
+      # MONGO_INITDB_ROOT_PASSWORD: password
+      # MONGO_INITDB_DATABASE: flaskdb
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null
+    volumes:
+      - mongodbdata:/data/db
+    ports:
+      - "27018:27017"
+
+  web:
+    build:
+      context: "."
+    depends_on:
+      - "redis"
+      - db
+    environment:
+      RED_SERVER: "redis"
+      RED_PORT: 6379 
+      MONGO_HOST: "mongodb"
+      MONGO_PORT: 27017
+    healthcheck:
+      test: curl localhost:8030/ping
+      interval: "60s"
+      timeout: "3s"
+      start_period: "5s"
+      retries: 3
+    ports:
+      - "8080:8030"
+    command:  python3 app.py
+    restart: "unless-stopped"
+    
+  worker:
+    build:
+      context: "."
+    environment:
+      RED_SERVER: "redis"
+      RED_PORT: 6379 
+      MONGO_HOST: "mongodb"
+      MONGO_PORT: 27017
+    command:  celery -A tasks worker --loglevel=INFO
+    depends_on:
+      - "redis"
+      - db
+    restart: "unless-stopped"
+
+  scheduler:
+    build:
+      context: "."
+    environment:
+      RED_SERVER: "redis"
+      RED_PORT: 6379
+      MONGO_HOST: "mongodb"
+      MONGO_PORT: 27017
+    command: celery -A celery_cron beat --loglevel=INFO
+    depends_on:
+      - "redis"
+      - "worker"
+      - db
+    restart: "unless-stopped"
+    
+volumes:
+  redis: {}
+  mongodbdata:

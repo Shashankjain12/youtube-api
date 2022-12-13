@@ -4,6 +4,10 @@ from utils.mongod import paginated_extractor, text_search
 app = Flask(__name__)
 
 
+@app.route("/ping")
+def ping():
+    return "Pinged the server", 200
+
 @app.route("/async_youtube")
 def youtube_search():
     search_youtube.delay()
