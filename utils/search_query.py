@@ -5,7 +5,7 @@
 # https://developers.google.com/explorer-help/code-samples#python
 
 import os
-from clients import max_results, date
+from clients import max_results, date, API_KEY
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
@@ -24,7 +24,7 @@ def search_query(query):
 
     # Get credentials and create an API client
     youtube = googleapiclient.discovery.build(
-        api_service_name, api_version, developerKey="AIzaSyCqHWCXvV9RlJR1b32inq5Y2lqxOS7_WGY")
+        api_service_name, api_version, developerKey=API_KEY)
 
     # Order by date query as song max results as 10 and published Before 30 seconds from query
     request = youtube.search().list(

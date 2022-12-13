@@ -32,4 +32,11 @@ Build the Application
 
 ```
 
+--------------------------
+Composing the Docker file
+---------------------------
+
+```
+> docker-compose up
+```
 
