@@ -1,3 +1,5 @@
 celerybeat-schedule.*
 __pycache__/**
 .env
+utils/__pycache__/mongod.cpython-310.pyc
+utils/__pycache__/search_query.cpython-310.pyc
